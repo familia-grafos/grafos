@@ -72,9 +72,9 @@ void ETSP::closestFirst(int vertexRoot){
 }
 
 int orientation(Vertex v1, Vertex v2, Vertex v3){
-	int det = (v2.posY - v1.posY) * (v3.posX - v2.posX) - (v2.posX - v1.posX) * (v3.posY - v2.posY);
-	if (det == 0) return CL;
-	return (det > 0) ? CW : CCW;
+	float det = (v1.posX - v2.posX)*(v3.posY - v2.posY) - (v1.posY - v2.posY)*(v3.posX - v2.posX);
+	if (det == 0) return 0;
+	return (det > 0) ? 1 : -1;
 }
 
 int sqrDist(Vertex a, Vertex b){
@@ -85,8 +85,8 @@ int sqrDist(Vertex a, Vertex b){
 
 bool polarOrder(Vertex a, Vertex b){
 	int order = orientation(initial, a, b);
-	if (order == CL) return sqrDist(initial, a) < sqrDist(initial, b);
-	return (order == CCW);
+	if (order == 0) return sqrDist(initial, a) < sqrDist(initial, b);
+	return (order == -1);
 }
 
 stack<Vertex> ETSP::grahamScan(){
@@ -103,16 +103,20 @@ stack<Vertex> ETSP::grahamScan(){
 	this->coordinates[0] = temp;
 
 	initial = coordinates[0];
-	sort(this->coordinates.begin()+1, this->coordinates.end()-1, polarOrder);
+	sort(this->coordinates.begin()+1, this->coordinates.end(), polarOrder);
 	
-	hull.push(this->coordinates[0]);
+	for(int i = 0; i < this->coordinates.size(); i++){
+		printf("%d ", coordinates[i]);
+	}
+
+	hull.push(this->coordinates[0]);	
 	hull.push(this->coordinates[1]);
 	hull.push(this->coordinates[2]);
     
-	for (int i = 3; i < this->vertexNum; i++) {
+	for (int i = 3; i < this->coordinates.size(); i++) {
 		Vertex top = hull.top();
 		hull.pop();
-		while (orientation(hull.top(), top, this->coordinates[i]) != CCW){
+		while (orientation(hull.top(), top, this->coordinates[i]) != -1){
 			top = hull.top();
 			hull.pop();
 		}
