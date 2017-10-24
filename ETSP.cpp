@@ -79,7 +79,7 @@ ETSP::ETSP(){
 				printf("Finished initializing.\n");
 
 				for (int i = 0; i < n; i++){
-					for (int j = 0; j <= i; j++) this->addDistanceVector(this->coordinates[i], this->coordinates[j], i);
+					for (int j = 0; j <= i; j++) this->addDistanceVector(this->coordinates[i], this->coordinates[j]);
 				}
 				printf("Finished assigning distances.\n");
 			}
@@ -93,7 +93,7 @@ ETSP::ETSP(){
 				printf("Finished initializing.\n");
 				
 				for (int i = 0; i < n; i++){
-					for (int j = 0; j < i; j++) this->addDistanceMatrix(this->coordinates[i], this->coordinates[j], i, j);
+					for (int j = 0; j < i; j++) this->addDistanceMatrix(this->coordinates[i], this->coordinates[j]);
 				}
 
 				printf("Finished assigning edges.\n");
@@ -129,9 +129,9 @@ void ETSP::initAdjVector(){
 	this->AdjVector.resize(this->vertexNum, v);
 }
 
-void ETSP::addDistanceVector(Vertex v1, Vertex v2, int id){
-	if (id == AdjVector[id].size()){
-		AdjVector[id].push_back(0.0);
+void ETSP::addDistanceVector(Vertex v1, Vertex v2){
+	if (v1.id == v2.id){
+		AdjVector[v1.id-1].push_back(0.0);
 		return;
 	}
 
@@ -140,7 +140,7 @@ void ETSP::addDistanceVector(Vertex v1, Vertex v2, int id){
 
 	float distance = sqrt(dx+dy);
 
-	this->AdjVector[id].push_back(distance);
+	this->AdjVector[v1.id-1].push_back(distance);
 }
 
 //-------------------Matriz de Adjacência; vector<float>[]----------------------------------------------//
@@ -153,13 +153,13 @@ void ETSP::initAdjMatrix(){
 	}
 }
 
-void ETSP::addDistanceMatrix(Vertex v1, Vertex v2, int id1, int id2){
+void ETSP::addDistanceMatrix(Vertex v1, Vertex v2){
 	float dx = pow((v2.posX-v1.posX), 2);
 	float dy = pow((v2.posY-v1.posY), 2);
 
 	float distance = sqrt(dx+dy);
 
-	this->AdjMatrix[id1][id2] = distance;
+	this->AdjMatrix[v1.id-1][v2.id-1] = distance;
 }
 
 //-------------------Funções Adicionais-----------------------------------------------------------------//
@@ -167,6 +167,6 @@ void ETSP::addDistanceMatrix(Vertex v1, Vertex v2, int id1, int id2){
 void ETSP::printPath(FILE* file){
 	fprintf(file, "Minimum Distance:	%.10f\n\n", this->totalDist);
 	fprintf(file, "[%d", this->minPath[0]);
-	for (int i = 1; i < this->vertexNum; i++) fprintf(file, ", %d", this->coordinates[i]);
+	for (int i = 1; i < this->vertexNum; i++) fprintf(file, ", %d", this->minPath[i]);
 	fprintf(file, "]");
 }
