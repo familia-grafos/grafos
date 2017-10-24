@@ -19,9 +19,6 @@ using namespace std;
 #define CLOSESTFIRST 7
 #define HULL 8
 #define CHRISTOFIDES 9
-#define CW 10
-#define CL 11
-#define CCW 12
 
 class Vertex{		
 	public:
@@ -57,8 +54,8 @@ class ETSP{
 		void initAdjVector();
 		void initAdjMatrix();
 		
-		void addDistanceVector(Vertex v1, Vertex v2, int id);
-		void addDistanceMatrix(Vertex v1, Vertex v2, int id1, int id2);
+		void addDistanceVector(Vertex v1, Vertex v2);
+		void addDistanceMatrix(Vertex v1, Vertex v2);
 		
 		void printPath(FILE* file);
 		
