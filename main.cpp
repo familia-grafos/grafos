@@ -1,6 +1,14 @@
 #include "ETSP.h"
 #include "IntHeapFunctions.h"
- 		
+
+void recPrint(stack<Vertex> hull){
+	if (hull.empty()) return;
+	int top = hull.top().id;
+	hull.pop();
+	recPrint(hull);
+	printf("%d ", top);
+}
+
 int main(){
 
 	FILE* arq1;
@@ -15,11 +23,7 @@ int main(){
 	StartCounter();
 	stack<Vertex> hull = grafo->grahamScan();
 	cout << GetCounter() << "s.\n";
-	printf("%d", hull.top().id);
-	while (!hull.empty()){
-		hull.pop();
-		printf(", %d", hull.top().id);
-	}
+	recPrint(hull);
 	
 	/*
 	int search;
@@ -35,7 +39,7 @@ int main(){
 	int path;		
 	int root;
 	
-	if (search != 2){
+	if (search != 2){	
 		printf("\nEnter the 1st tree's root (the valid interval is [1, %d]): ", grafo->vertexNum);
 		cin >> root;
 		printf("\n");		
