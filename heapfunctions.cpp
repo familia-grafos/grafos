@@ -1,9 +1,3 @@
-i'm boss, you a worker bitch i make bloody moves
-
-
-
-
-
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
