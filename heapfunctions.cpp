@@ -41,3 +41,55 @@ void ETSP::heapInsert(vector<Comb>* heap, vector<int> chosen, Comb c){
 	heap->push_back(c);
 	if (index != 0) heapifyBottomUp(heap, chosen, index);
 }
+
+
+void ETSP::heapifyTopDown(vector<Comb>* heap, vector<int> chosen, int root){
+	int smallest = root;
+	int leftSon = 2*root+1;
+	int rightSon = 2*root+2;
+
+	Comb lSonC = (*heap)[leftSon];
+	Comb rSonC = (*heap)[rightSon];
+	Comb fatherC = (*heap)[smallest];
+
+	float lSonCab = getDistance(this->minPath[lSonC.indexA]-1, this->minPath[lSonC.indexB]-1);
+	float lSonCar = getDistance(this->minPath[lSonC.indexA]-1, chosen[lSonC.indexR]-1);
+	float lSonCrb = getDistance(chosen[lSonC.indexR]-1, this->minPath[lSonC.indexB]-1);
+
+	float rSonCab = getDistance(this->minPath[rSonC.indexA]-1, this->minPath[rSonC.indexB]-1);
+	float rSonCar = getDistance(this->minPath[rSonC.indexA]-1, chosen[rSonC.indexR]-1);
+	float rSonCrb = getDistance(chosen[rSonC.indexR]-1, this->minPath[rSonC.indexB]-1);	
+
+	float fatherCab = getDistance(this->minPath[fatherC.indexA]-1, this->minPath[fatherC.indexB]-1);
+	float fatherCar = getDistance(this->minPath[fatherC.indexA]-1, chosen[fatherC.indexR]-1);
+	float fatherCrb = getDistance(chosen[fatherC.indexR]-1, this->minPath[fatherC.indexB]-1);
+
+	if (leftSon < heap->size() && lSonCar + lSonCrb - lSonCab < fatherCar + fatherCrb - fatherCab){
+		smallest = leftSon;
+		fatherCab = lSonCab;
+		fatherCar = lSonCar;
+		fatherCrb = lSonCrb;
+	}
+
+	if (rightSon < heap->size() && rSonCar + rSonCrb - rSonCab < fatherCar + fatherCrb - fatherCab) father = rightSon;
+
+	if (smallest != root){
+		swap(heap, smallest, root);
+		heapifyTopDown(heap, chosen, smallest);
+	}
+}
+
+Comb ETSP::heapRemove(vector<Comb>* heap, vector<int> chosen){
+	int index = heap->size()-1;
+	if (index < 0) return;
+	Comb res = heap[0];
+
+	vector<Comb> temp;
+	swap(heap, index, 0);
+	heap->swap(temp);
+	temp.pop_back();
+	temp.swap(*heap);
+
+	this->heapifyTopDown(heap, chosen, 0);
+	return res;
+}
