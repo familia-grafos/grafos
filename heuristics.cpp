@@ -1,10 +1,3 @@
-//------------------------------------------------------------------------------------------------------------------------------------------------
-//  TODO LIST:
-//	=> TSP implementation{ http://www2.isye.gatech.edu/~mgoetsch/cali/VEHICLE/TSP/TSP017__.HTM
-//		-> steps 2 through 5
-//		}
-//	=>
-//------------------------------------------------------------------------------------------------------------------------------------------------
 #define CW 10
 #define CL 11
 #define CCW 12
@@ -95,6 +88,8 @@ stack<Vertex> ETSP::grahamScan(){
 void ETSP::cheapInsertion(){
 	
 	vector<int> chosen;
+	vector<Comb> smallest;
+	int newVertex = 0;
 
 	stack<Vertex> hull = this->grahamScan();
 	while(!hull.empty()){
@@ -102,35 +97,39 @@ void ETSP::cheapInsertion(){
 		this->descobertos[hull.top().id-1] = 1;
 		hull.pop();
 	}
+
 	for (int i = 0; i < this->vertexNum; i++) if (!(this->descobertos[i])) chosen.push_back(i+1);
+	
+	for (int j = 0; j < chosen.size(); j++){
+		
+		float cab, car, crb;
+
+		float dist = inf;
+		Comb c;
+		c.indexR = j;
+
+		for (int i = 0; i < this->minPath.size()-1; i++){
+			
+			cab = getDistance(this->minPath[i]-1, this->minPath[i+1]-1);
+			car = getDistance(this->minPath[i]-1, chosen[j]-1);
+			crb = getDistance(chosen[j]-1, this->minPath[i+1]-1);
+
+			if (dist > car + crb - cab){
+				dist = cab + crb - cab;
+				c.indexA = i;
+				c.indexB = i+1;
+			}
+		}
+		this->heapInsert(&smallest, chosen, c);
+		newVertex = j;
+		this->minPath.insert(minPath.begin() + min.indexB, chosen[min.indexR]);
+		this->descobertos[chosen[min.indexR]-1];
+	}
 
 	while (this->minPath.size() < this->vertexNum){
-		
-		vector<Comb> smallest;
-		for (int j = 0; j < chosen.size(); j++){
-			
-			float cab, car, crb;
+		//DEVELOP
 
-			float dist = inf;
-			Comb c;
-			c.indexR = j;
-
-			for (int i = 0; i < this->minPath.size()-1; i++){
-				
-				cab = getDistance(this->minPath[i]-1, this->minPath[i+1]-1);
-				car = getDistance(this->minPath[i]-1, chosen[j]-1);
-				crb = getDistance(chosen[j]-1, this->minPath[i+1]-1);
-
-				if (dist > car + crb - cab){
-					dist = cab + crb - cab;
-					c.indexA = i;
-					c.indexB = i+1;
-				}
-			}
-			this->heapInsert(&smallest, chosen, c);
-		}
-
-		Comb min = smallest[0];
+		Comb min = heapRemove(&smallest);
 		this->minPath.insert(minPath.begin() + min.indexB, chosen[min.indexR]);
 		this->descobertos[chosen[min.indexR]-1];
 		chosen.erase(chosen.begin() + min.indexR);
