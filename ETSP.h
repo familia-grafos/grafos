@@ -70,6 +70,8 @@ class ETSP{
 
 		void heapInsert(vector<Comb>* heap, vector<int> chosen, Comb c);
 		void heapifyBottomUp(vector<Comb>* heap, vector<int> chosen, int son);
+		void heapRemove(vector<Comb>* heap, vector<int> chosen);
+		void heapifyTopDown(vector<Comb>* heap, vector<int> chosen, int root);
 
 	private:
 		int representation;
