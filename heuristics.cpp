@@ -39,24 +39,27 @@ void ETSP::twoOpt(){
 
 vector<int> ETSP::twoOptSwap(int i, int j, float* distance){
 	vector<int> newMinPath;
-	newMinPath.push_back(0);
+	newMinPath.push_back(this->minPath[0]);
 	for ( int c = 1; c <= i - 1; ++c ){
-		 	newMinPath.push_back(c);
+		 	newMinPath.push_back(this->minPath[c]);
 			//calcular distancia
 			int index = newMinPath.size()-1;
-			(*distance) += this->getDistance(newMinPath[index]-1, );
+			(*distance) += this->getDistance(newMinPath[index-1]-1, newMinPath[index]-1);
 	 }
 	 int dec = 0;
 	 for ( int c = i; c <= k; ++c ){
-		 newMinPath.push_back(k-dec);
+		 newMinPath.push_back(this->minPath[k-dec]);
+		 int index = newMinPath.size()-1;
+		 (*distance) += this->getDistance(newMinPath[index-1]-1, newMinPath[index]-1);
 		 dec++;
 		 //calcular distancia
 
 		}
 	 for ( int c = k + 1; c < size; ++c ){
-		 newMinPath.push_back(c);
+		 newMinPath.push_back(this->minPath[c]);
 		 //calcular distancia
-
+		 int index = newMinPath.size()-1;
+		 (*distance) += this->getDistance(newMinPath[index-1]-1, newMinPath[index]-1);
 	 }
 	 return newMinPath;
 }
