@@ -23,6 +23,7 @@ int main(){
 		
 		StartCounter();
 		grafo->closestFirst(root);
+		grafo->twoOpt();
 		cout << GetCounter() << "s.\n";
 	}
 	else{
