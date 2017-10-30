@@ -20,7 +20,7 @@ using namespace std;
 #define CLOSESTFIRST 2
 #define HULL 3
 
-class Vertex{		
+class Vertex{
 	public:
 		int id;
 		float posX;
@@ -44,28 +44,30 @@ void StartCounter();
 double GetCounter();
 
 class ETSP{
-	
+
 	public:
-		
+
 		vector<Vertex> coordinates;
 		vector<bool> descobertos;
 		vector<vector<float> > AdjVector; // Vetor de Adjacência
 		float** AdjMatrix; // Matriz de Adjacência; vector<bool>
 		vector<int> minPath;
+		vector<int> minPath2;
+
 		float totalDist;
 
 		ETSP();
-		
+
 		int initEssentials(int size, int x);
-		
+
 		void init();
 		void addDistance(Vertex v1, Vertex v2);
 		float getDistance(int v1, int v2);
 
 		void printPath(FILE* file);
-		
+
 		void twoOpt();
-		void twoOptSwap(int i, int j);
+		vector<int> twoOptSwap(int i, int j, float* distance);
 		stack<Vertex> grahamScan();
 		void closestFirst(int vertexRoot);
 		void cheapInsertion();
