@@ -76,7 +76,7 @@ ETSP::ETSP(){
 
 		time = GetCounter();
 	}
-
+	this->totalDist = 0.0;
 	printf("Finished printing.\n\n");
 	cout << time << "s.\n";
 	fclose(in);
@@ -154,6 +154,6 @@ void ETSP::printPath(FILE* file){
 	fprintf(file, "Minimum Distance:	%.10f\n", this->totalDist);
 	fprintf(file, "Minimum Path:	[%d", this->minPath[0]);
 	
-	for (int i = 1; i < this->vertexNum; i++) fprintf(file, ", %d", this->minPath[i]);
+	for (int i = 1; i < this->vertexNum; i++) fprintf(file, ",	%d", this->minPath[i]);
 	fprintf(file, "]");
 }
