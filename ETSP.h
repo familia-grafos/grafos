@@ -1,4 +1,5 @@
 #include <cmath>
+#include <list>
 #include <algorithm>
 #include <iostream>
 #include <stdio.h>
@@ -16,9 +17,8 @@ using namespace std;
 
 #define VECTOR 0
 #define MATRIX 1
-#define CLOSESTFIRST 7
-#define HULL 8
-#define CHRISTOFIDES 9
+#define CLOSESTFIRST 2
+#define HULL 3
 
 class Vertex{		
 	public:
@@ -36,7 +36,9 @@ typedef struct{
 	int indexA;
 	int indexB;
 	int indexR;
-} Comb;
+	float dist;
+	float compare;
+} Tuple;
 
 void StartCounter();
 double GetCounter();
@@ -62,16 +64,17 @@ class ETSP{
 
 		void printPath(FILE* file);
 		
-		void twoOpt(int start, int end);
+		void twoOpt();
+		void twoOptSwap(int i, int j);
 		stack<Vertex> grahamScan();
 		void closestFirst(int vertexRoot);
 		void cheapInsertion();
 		void christofides();
 
-		void heapInsert(vector<Comb>* heap, vector<int> chosen, Comb c);
-		void heapifyBottomUp(vector<Comb>* heap, vector<int> chosen, int son);
-		void heapRemove(vector<Comb>* heap, vector<int> chosen);
-		void heapifyTopDown(vector<Comb>* heap, vector<int> chosen, int root);
+		void heapInsert(vector<Tuple>* heap, vector<int> chosen, Tuple c);
+		void heapifyBottomUp(vector<Tuple>* heap, vector<int> chosen, int son);
+		void heapifyTopDown(vector<Tuple>* heap, vector<int> chosen, int root);
+		void heapRemove(vector<Tuple>* heap, vector<int> chosen);
 
 	private:
 		int representation;
