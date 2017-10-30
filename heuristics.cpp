@@ -24,7 +24,7 @@ void ETSP::twoOpt(){
 
 			for (int i = 0; i < this->minPath.size() - 1; i++){
 				for (int j = i+1; j < this->minPath.size(); j++){
-					float newDistance = 0.0;
+					float newDistance = inf;
 					nMinPath = twoOptSwap(i, j, &newDistance);
 					if (newDistance < bestDistance){
 						improve = 0;
@@ -50,23 +50,28 @@ vector<int> ETSP::twoOptSwap(int i, int j, float* distance){
 	float dxy, dwz, dxw, dyz;
 
 	if (i == 0){
-		dxy = this->getDistance(this->minPath[this->minPath.size()-1]-1, this->minPath[0]-1);	
+		dxy = this->getDistance(this->minPath[this->minPath.size()-1]-1, this->minPath[i]-1);	
 		dxw = this->getDistance(this->minPath[this->minPath.size()-1]-1, this->minPath[j]-1);
 		dwz = this->getDistance(this->minPath[j]-1, this->minPath[j+1]-1);
-		dyz = this->getDistance(this->minPath[0]-1, this->minPath[j+1]-1);
+		dyz = this->getDistance(this->minPath[i]-1, this->minPath[j+1]-1);
 	}
 	else{
-		dxy = this->getDistance(this->minPath[i-1]-1, this->minPath[i]-1);
-		dxw = this->getDistance(this->getDistance(this->minPath[i-1]-1, this->minPath[j]-1);
-
-
 		if (j == this->minPath.size()-1){
+			dxy = this->getDistance(this->minPath[i-1]-1, this->minPath[i]-1);	
+			dxw = this->getDistance(this->minPath[i-1]-1, this->minPath[j]-1);
 			dwz = this->getDistance(this->minPath[j]-1, this->minPath[0]-1);
+			dyz = this->getDistance(this->minPath[i]-1, this->minPath[0]-1);
 		}
-		
+		else{
+			dxy = this->getDistance(this->minPath[i-1]-1, this->minPath[i]-1);	
+			dxw = this->getDistance(this->minPath[i-1]-1, this->minPath[j]-1);
+			dwz = this->getDistance(this->minPath[j]-1, this->minPath[j+1]-1);
+			dyz = this->getDistance(this->minPath[i]-1, this->minPath[j+1]-1);
+		}		
 	}
-	
 
+	float increase = dxw + dyz - dxy - dwz;
+	(*distance) += increase;
 	/*vector<int> newMinPath;
 	newMinPath.push_back(this->minPath[0]);
 
@@ -94,9 +99,6 @@ vector<int> ETSP::twoOptSwap(int i, int j, float* distance){
 		(*distance) += this->getDistance(newMinPath[index-1]-1, newMinPath[index]-1);
 	}
 	*/
-	int index = this->minPath.size()-1;
-	(*distance) += this->getDistance(this->minPath[index]-1, this->minPath[0]-1);
-	
 	return newMinPath;
 }
 
