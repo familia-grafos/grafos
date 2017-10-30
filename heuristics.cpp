@@ -159,7 +159,6 @@ void ETSP::cheapInsertion(){
 		chosen.erase(chosen.begin() + min.indexR);
 	}
 
-	this->minPath.push_back(minPath[0]);
 	int index = this->minPath.size()-1;
-	this->totalDist += this->getDistance(this->minPath[index-1]-1, this->minPath[index]-1);
+	this->totalDist += this->getDistance(this->minPath[index]-1, this->minPath[0]-1);
 }
