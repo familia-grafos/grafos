@@ -118,7 +118,6 @@ void ETSP::addDistance(Vertex v1, Vertex v2){
 		float dy = pow((v2.posY-v1.posY), 2);
 
 		float distance = sqrt(dx+dy);
-		printf("%.10f\n", distance);
 
 		this->AdjVector[v1.id-1].push_back(distance);
 	}
@@ -134,7 +133,7 @@ void ETSP::addDistance(Vertex v1, Vertex v2){
 
 		float distance = sqrt(dx+dy);
 
-		this->AdjMatrix[v1.id-1][v2.id-1] = distance;		
+		this->AdjMatrix[v1.id-1][v2.id-1] = distance;
 	}
 }
 
@@ -154,7 +153,10 @@ float ETSP::getDistance(int v1, int v2){
 
 void ETSP::printPath(FILE* file){
 	fprintf(file, "Minimum Distance:	%.10f\n", this->totalDist);
+	//fprintf(file, "Time:	%d", cout);
 	fprintf(file, "Minimum Path:	%d", this->minPath[0]);
+
 	
-	for (int i = 1; i < this->minPath.size(); i++) fprintf(file, "	%d", this->minPath[i]);
+	
+	for (int i = 1; i < this->minPath.size(); i++) fprintf(file, " %d", this->minPath[i]);
 }
