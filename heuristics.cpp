@@ -49,15 +49,14 @@ void ETSP::closestFirst(int vertexRoot){
 				v2 = j+1;
 			}
 		}
-		if (v2){
-			totalDist += smallest;
+		if (v2 > 0){
+			this->totalDist += smallest;
 			this->minPath.push_back(v2);
 		}
 		vertexRoot = v2;
 	}
-	this->minPath.push_back(minPath[0]);
 	int index = this->minPath.size()-1;
-	this->totalDist += this->getDistance(this->minPath[index-1], this->minPath[index]);
+	this->totalDist += this->getDistance(this->minPath[index]-1, this->minPath[0]-1);
 }
 
 int orientation(Vertex v1, Vertex v2, Vertex v3){
@@ -162,5 +161,5 @@ void ETSP::cheapInsertion(){
 
 	this->minPath.push_back(minPath[0]);
 	int index = this->minPath.size()-1;
-	this->totalDist += this->getDistance(this->minPath[index-1], this->minPath[index]);
+	this->totalDist += this->getDistance(this->minPath[index-1]-1, this->minPath[index]-1);
 }
