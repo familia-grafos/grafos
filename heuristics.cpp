@@ -16,26 +16,53 @@ Vertex initial;
 
 void ETSP::twoOpt(){
 	int improve = 0;
-	
+	vector<int> nMinPath;
+
 	while (improve < 20){
 		float bestDistance = this->totalDist;
 
 		for (int i = 0; i < this->minPath.size() - 1; i++){
 			for (int j = i+1; j < this->		minPath.size(); j++){
-				twoOptSwap(i, j);
-
-				float newDistance = bestDistance;
+				float newDistance = 0.0;
+				nMinPath = twoOptSwap(i, j, &newDistance);
+				if (newDistance < bestDistance){
+					improve = 0;
+					this->minPath = nMinPath;
+					bestDistance = newDistance;
+					this->totalDist = bestDistance;
+				}
 			}
 		}
+		improve++;
 	}
 }
 
-void ETSP::twoOptSwap(int i, int j){
+vector<int> ETSP::twoOptSwap(int i, int j, float* distance){
+	vector<int> newMinPath;
+	newMinPath.push_back(0);
+	for ( int c = 1; c <= i - 1; ++c ){
+		 	newMinPath.push_back(c);
+			//calcular distancia
+			int index = newMinPath.size()-1;
+			(*distance) += this->getDistance(newMinPath[index]-1, );
+	 }
+	 int dec = 0;
+	 for ( int c = i; c <= k; ++c ){
+		 newMinPath.push_back(k-dec);
+		 dec++;
+		 //calcular distancia
 
+		}
+	 for ( int c = k + 1; c < size; ++c ){
+		 newMinPath.push_back(c);
+		 //calcular distancia
+
+	 }
+	 return newMinPath;
 }
 
 void ETSP::closestFirst(int vertexRoot){
-	
+
 	this->minPath.push_back(vertexRoot);
 	this->totalDist = 0.0;
 
@@ -92,11 +119,11 @@ stack<Vertex> ETSP::grahamScan(){
 
 	initial = coordinates[0];
 	sort(this->coordinates.begin()+1, this->coordinates.end(), polarOrder);
-	
-	hull.push(this->coordinates[0]);	
+
+	hull.push(this->coordinates[0]);
 	hull.push(this->coordinates[1]);
 	hull.push(this->coordinates[2]);
-    
+
 	for (int i = 3; i < this->coordinates.size(); i++) {
 		Vertex top = hull.top();
 		hull.pop();
@@ -111,7 +138,7 @@ stack<Vertex> ETSP::grahamScan(){
 }
 
 void ETSP::cheapInsertion(){
-	
+
 	this->totalDist = 0.0;
 	vector<int> chosen;
 
@@ -126,10 +153,10 @@ void ETSP::cheapInsertion(){
 	for (int i = 0; i < this->vertexNum; i++) if (!(this->descobertos[i])) chosen.push_back(i+1);
 
 	while (this->minPath.size() < this->vertexNum){
-		
+
 		vector<Tuple> smallest;
 		float cab, car, crb;
-		
+
 		for (int j = 0; j < chosen.size(); j++){
 
 			Tuple c;
@@ -137,7 +164,7 @@ void ETSP::cheapInsertion(){
 			c.indexR = j;
 
 			for (int i = 0; i < this->minPath.size()-1; i++){
-				
+
 				cab = getDistance(this->minPath[i]-1, this->minPath[i+1]-1);
 				car = getDistance(this->minPath[i]-1, chosen[j]-1);
 				crb = getDistance(chosen[j]-1, this->minPath[i+1]-1);
