@@ -1,3 +1,10 @@
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//  TODO LIST:
+//	=> TSP implementation{ http://www2.isye.gatech.edu/~mgoetsch/cali/VEHICLE/TSP/TSP017__.HTM
+//		-> steps 2 through 5
+//		}
+//	=>
+//------------------------------------------------------------------------------------------------------------------------------------------------
 #define CW 10
 #define CL 11
 #define CCW 12
@@ -7,7 +14,23 @@
 static float inf = numeric_limits<float>::infinity();
 Vertex initial;
 
-void ETSP::twoOpt(int start, int end){
+void ETSP::twoOpt(){
+	int improve = 0;
+	
+	while (improve < 20){
+		float bestDistance = this->totalDist;
+
+		for (int i = 0; i < this->minPath.size() - 1; i++){
+			for (int j = i+1; j < this->		minPath.size(); j++){
+				twoOptSwap(i, j);
+
+				float newDistance = bestDistance;
+			}
+		}
+	}
+}
+
+void ETSP::twoOptSwap(int i, int j){
 
 }
 
@@ -32,6 +55,9 @@ void ETSP::closestFirst(int vertexRoot){
 		}
 		vertexRoot = v2;
 	}
+	this->minPath.push_back(minPath[0]);
+	int index = this->minPath.size()-1;
+	this->totalDist += this->getDistance(this->minPath[index-1], this->minPath[index]);
 }
 
 int orientation(Vertex v1, Vertex v2, Vertex v3){
@@ -87,51 +113,54 @@ stack<Vertex> ETSP::grahamScan(){
 
 void ETSP::cheapInsertion(){
 	
+	this->totalDist = 0.0;
 	vector<int> chosen;
-	vector<Comb> smallest;
-	int newVertex = 0;
 
 	stack<Vertex> hull = this->grahamScan();
 	while(!hull.empty()){
-		this->minPath.push_back(hull.top().id);
-		this->descobertos[hull.top().id-1] = 1;
+		Vertex top = hull.top();
+		this->minPath.push_back(top.id);
+		this->descobertos[top.id-1] = 1;
 		hull.pop();
+		if (!hull.empty()) this->totalDist += getDistance(top.id-1, hull.top().id-1);
 	}
-
 	for (int i = 0; i < this->vertexNum; i++) if (!(this->descobertos[i])) chosen.push_back(i+1);
-	
-	for (int j = 0; j < chosen.size(); j++){
-		
-		float cab, car, crb;
-
-		float dist = inf;
-		Comb c;
-		c.indexR = j;
-
-		for (int i = 0; i < this->minPath.size()-1; i++){
-			
-			cab = getDistance(this->minPath[i]-1, this->minPath[i+1]-1);
-			car = getDistance(this->minPath[i]-1, chosen[j]-1);
-			crb = getDistance(chosen[j]-1, this->minPath[i+1]-1);
-
-			if (dist > car + crb - cab){
-				dist = cab + crb - cab;
-				c.indexA = i;
-				c.indexB = i+1;
-			}
-		}
-		this->heapInsert(&smallest, chosen, c);
-		newVertex = j;
-		this->minPath.insert(minPath.begin() + min.indexB, chosen[min.indexR]);
-		this->descobertos[chosen[min.indexR]-1];
-	}
 
 	while (this->minPath.size() < this->vertexNum){
-		//DEVELOP
+		
+		vector<Tuple> smallest;
+		float cab, car, crb;
+		
+		for (int j = 0; j < chosen.size(); j++){
 
-		Comb min = heapRemove(&smallest);
+			Tuple c;
+			c.dist = inf;
+			c.indexR = j;
+
+			for (int i = 0; i < this->minPath.size()-1; i++){
+				
+				cab = getDistance(this->minPath[i]-1, this->minPath[i+1]-1);
+				car = getDistance(this->minPath[i]-1, chosen[j]-1);
+				crb = getDistance(chosen[j]-1, this->minPath[i+1]-1);
+
+				if (c.dist > car + crb - cab){
+					c.dist = car + crb - cab;
+					c.indexA = i;
+					c.indexB = i+1;
+				}
+			}
+
+			c.compare = (car + crb)/cab;
+			this->heapInsert(&smallest, chosen, c);
+		}
+		Tuple min = smallest[0];
+		totalDist += min.dist;
 		this->minPath.insert(minPath.begin() + min.indexB, chosen[min.indexR]);
 		this->descobertos[chosen[min.indexR]-1];
 		chosen.erase(chosen.begin() + min.indexR);
 	}
+
+	this->minPath.push_back(minPath[0]);
+	int index = this->minPath.size()-1;
+	this->totalDist += this->getDistance(this->minPath[index-1], this->minPath[index]);
 }
