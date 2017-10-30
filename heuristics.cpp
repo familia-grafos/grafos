@@ -17,53 +17,87 @@ Vertex initial;
 void ETSP::twoOpt(){
 	int improve = 0;
 	vector<int> nMinPath;
+	//#pragma omp parallel
+	//{
+		while (improve < 1){
+			float bestDistance = this->totalDist;
 
-	while (improve < 20){
-		float bestDistance = this->totalDist;
-
-		for (int i = 0; i < this->minPath.size() - 1; i++){
-			for (int j = i+1; j < this->minPath.size(); j++){
-				float newDistance = 0.0;
-				nMinPath = twoOptSwap(i, j, &newDistance);
-				if (newDistance < bestDistance){
-					improve = 0;
-					this->minPath = nMinPath;
-					bestDistance = newDistance;
-					this->totalDist = bestDistance;
+			for (int i = 0; i < this->minPath.size() - 1; i++){
+				for (int j = i+1; j < this->minPath.size(); j++){
+					float newDistance = 0.0;
+					nMinPath = twoOptSwap(i, j, &newDistance);
+					if (newDistance < bestDistance){
+						improve = 0;
+						this->minPath = nMinPath;
+						bestDistance = newDistance;
+						this->totalDist = bestDistance;
+					}
 				}
 			}
+			improve++;
 		}
-		improve++;
-	}
+	//}
 }
 
 vector<int> ETSP::twoOptSwap(int i, int j, float* distance){
-	vector<int> newMinPath;
-	//newMinPath.push_back(this->minPath[0]);
-	for ( int c = 0; c <= i - 1; ++c ){
-		 	newMinPath.push_back(this->minPath[c]);
-			//calcular distancia
-			if (c!=0){
-				int index = newMinPath.size()-1;
-				(*distance) += this->getDistance(newMinPath[index-1]-1, newMinPath[index]-1);
-			}
-	 }
-	 int dec = 0;
-	 for ( int c = i; c <= j; ++c ){
-		 newMinPath.push_back(this->minPath[j-dec]);
-		 int index = newMinPath.size()-1;
-		 (*distance) += this->getDistance(newMinPath[index-1]-1, newMinPath[index]-1);
-		 dec++;
-		 //calcular distancia
+	if (i == 0 && j == this->minPath.size()-1) return this->minPath;
 
+	vector<int> newMinPath (this->minPath);
+	(*distance) = this->totalDist;
+
+	reverse(newMinPath.begin()+i, newMinPath.begin()+j+1);
+
+	float dxy, dwz, dxw, dyz;
+
+	if (i == 0){
+		dxy = this->getDistance(this->minPath[this->minPath.size()-1]-1, this->minPath[0]-1);	
+		dxw = this->getDistance(this->minPath[this->minPath.size()-1]-1, this->minPath[j]-1);
+		dwz = this->getDistance(this->minPath[j]-1, this->minPath[j+1]-1);
+		dyz = this->getDistance(this->minPath[0]-1, this->minPath[j+1]-1);
+	}
+	else{
+		dxy = this->getDistance(this->minPath[i-1]-1, this->minPath[i]-1);
+		dxw = this->getDistance(this->getDistance(this->minPath[i-1]-1, this->minPath[j]-1);
+
+
+		if (j == this->minPath.size()-1){
+			dwz = this->getDistance(this->minPath[j]-1, this->minPath[0]-1);
 		}
-	 for ( int c = j + 1; c < this->minPath.size(); ++c ){
-		 newMinPath.push_back(this->minPath[c]);
-		 //calcular distancia
-		 int index = newMinPath.size()-1;
-		 (*distance) += this->getDistance(newMinPath[index-1]-1, newMinPath[index]-1);
-	 }
-	 return newMinPath;
+		
+	}
+	
+
+	/*vector<int> newMinPath;
+	newMinPath.push_back(this->minPath[0]);
+
+	for (int c = 1; c <= i - 1; ++c){
+		newMinPath.push_back(this->minPath[c]);
+		//calcular distancia
+		int index = newMinPath.size()-1;
+		(*distance) += this->getDistance(newMinPath[index-1]-1, newMinPath[index]-1);
+	}
+	
+	int dec = 0;
+	
+	for (int c = i; c <= j; ++c){
+		newMinPath.push_back(this->minPath[j - dec]);
+		int index = newMinPath.size()-1;
+		(*distance) += this->getDistance(newMinPath[index-1]-1, newMinPath[index]-1);
+		dec++;
+		//calcular distancia
+		}
+
+	for (int c = j + 1; c < this->minPath.size(); ++c){
+		newMinPath.push_back(this->minPath[c]);
+		//calcular distancia
+		int index = newMinPath.size()-1;
+		(*distance) += this->getDistance(newMinPath[index-1]-1, newMinPath[index]-1);
+	}
+	*/
+	int index = this->minPath.size()-1;
+	(*distance) += this->getDistance(this->minPath[index]-1, this->minPath[0]-1);
+	
+	return newMinPath;
 }
 
 void ETSP::closestFirst(int vertexRoot){
