@@ -57,10 +57,11 @@ ETSP::ETSP(){
 		if (x) printf("Couldn't create graph.");
 		else{		
 			int a, b;
-			int z = 0;
+			int z = 1;
 			while (fscanf(in, "%d %d", &a, &b) == 2){
 				Vertex u;
-				u.id = ++z;
+				u.id = z;
+				z++;
 				u.posX = a;
 				u.posY = b;
 				this->coordinates.push_back(u);
@@ -117,8 +118,9 @@ void ETSP::addDistance(Vertex v1, Vertex v2){
 		float dy = pow((v2.posY-v1.posY), 2);
 
 		float distance = sqrt(dx+dy);
+		printf("%.10f\n", distance);
 
-		this->AdjVector[v1.id-1].push_back(distance);		
+		this->AdjVector[v1.id-1].push_back(distance);
 	}
 
 	if (this->representation == MATRIX){
@@ -152,8 +154,7 @@ float ETSP::getDistance(int v1, int v2){
 
 void ETSP::printPath(FILE* file){
 	fprintf(file, "Minimum Distance:	%.10f\n", this->totalDist);
-	fprintf(file, "Minimum Path:	[%d", this->minPath[0]);
+	fprintf(file, "Minimum Path:	%d", this->minPath[0]);
 	
-	for (int i = 1; i < this->vertexNum; i++) fprintf(file, ",	%d", this->minPath[i]);
-	fprintf(file, "]");
+	for (int i = 1; i < this->minPath.size(); i++) fprintf(file, "	%d", this->minPath[i]);
 }
