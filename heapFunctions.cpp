@@ -21,7 +21,7 @@ void ETSP::heapifyBottomUp(vector<Tuple>* heap, vector<int> chosen, int son){
 	Tuple sonC = (*heap)[son];
 	Tuple fatherC = (*heap)[father];
 
-	if (sonC.compare < fatherC.compare){
+	if (sonC.dist < fatherC.dist){
 		swap(heap, father, son);
 		heapifyBottomUp(heap, chosen, father);
 	}
