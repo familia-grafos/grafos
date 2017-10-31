@@ -37,7 +37,6 @@ typedef struct{
 	int indexB;
 	int indexR;
 	float dist;
-	float compare;
 } Tuple;
 
 void StartCounter();
