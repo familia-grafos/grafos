@@ -192,6 +192,7 @@ void ETSP::cheapInsertion(){
 		if (!hull.empty()) this->totalDist += getDistance(top.id-1, hull.top().id-1);
 		else this->totalDist += getDistance(top.id-1, this->minPath[0]-1);
 	}
+	
 	for (int i = 0; i < this->vertexNum; i++) if (!(this->descobertos[i])) chosen.push_back(i+1);
 
 	while (this->minPath.size() < this->vertexNum){
@@ -218,22 +219,17 @@ void ETSP::cheapInsertion(){
 					crb = getDistance(chosen[j]-1, this->minPath[i+1]-1);
 				}
 
-				printf("%f + %f - %f = %f\n", car, crb, cab, car + crb - cab);
-
 				if (c.dist > car + crb - cab){
 					c.dist = car + crb - cab;
 					c.indexA = i;
 					c.indexB = i+1;
 				}
-				printf("%f\n", c.dist);
 			}
-
 			this->heapInsert(&smallest, chosen, c);
 		}
 		Tuple min = smallest[0];
-		printf("%f\n", min.dist);
 		totalDist += min.dist;
-		printf("%f\n", this->totalDist);
+
 		this->minPath.insert(minPath.begin() + min.indexB, chosen[min.indexR]);
 		this->descobertos[chosen[min.indexR]-1];
 		chosen.erase(chosen.begin() + min.indexR);
