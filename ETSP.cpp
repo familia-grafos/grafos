@@ -1,25 +1,4 @@
 #include "ETSP.h"
-#include <windows.h>
-
-double PCFreq = 0.0;
-__int64 CounterStart = 0;
-
-void StartCounter(){
-    LARGE_INTEGER li;
-    if(!QueryPerformanceFrequency(&li))
-    cout << "QueryPerformanceFrequency failed!\n";
-
-    PCFreq = double(li.QuadPart)/1.0;
-
-    QueryPerformanceCounter(&li);
-    CounterStart = li.QuadPart;
-}
-
-double GetCounter(){
-    LARGE_INTEGER li;
-    QueryPerformanceCounter(&li);
-    return double(li.QuadPart-CounterStart)/PCFreq;
-}
 
 ETSP::ETSP(){
 
@@ -47,12 +26,9 @@ ETSP::ETSP(){
 	cin >> m;
 	printf("\n");
 
-	double time;
-
 	if (!in) printf("Could not open file.\n");
 	else{
-		StartCounter();
-		
+				
 		int x = this->initEssentials(n, m);
 		if (x) printf("Couldn't create graph.");
 		else{		
@@ -74,12 +50,9 @@ ETSP::ETSP(){
 			}
 			printf("Finished assigning distances.\n");
 		}
-
-		time = GetCounter();
 	}
 	this->totalDist = 0.0;
 	printf("Finished printing.\n\n");
-	cout << time << "s.\n";
 	fclose(in);
 }
 
