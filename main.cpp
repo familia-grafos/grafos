@@ -21,16 +21,11 @@ int main(){
 		cin >> root;
 		printf("\n");
 		
-		StartCounter();
 		grafo->closestFirst(root);
 		grafo->twoOpt();
-		cout << GetCounter() << "s.\n";
 	}
-	else{
-		StartCounter();
-		grafo->cheapInsertion();
-		cout << GetCounter() << "s.\n";
-	}
+	else grafo->cheapInsertion();
+
 	FILE* arq1;
 	arq1 = fopen("vertices.txt", "w");
 
