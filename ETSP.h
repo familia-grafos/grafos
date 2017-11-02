@@ -33,9 +33,9 @@ class Vertex{
 };
 
 typedef struct{
-	int indexA;
-	int indexB;
-	int indexR;
+	int verA;
+	int verB;
+	int verR;
 	float dist;
 } Tuple;
 
@@ -70,12 +70,11 @@ class ETSP{
 		stack<Vertex> grahamScan();
 		void closestFirst(int vertexRoot);
 		void cheapInsertion();
-		void christofides();
 
-		void heapInsert(vector<Tuple>* heap, vector<int> chosen, Tuple c);
-		void heapifyBottomUp(vector<Tuple>* heap, vector<int> chosen, int son);
-		void heapifyTopDown(vector<Tuple>* heap, vector<int> chosen, int root);
-		void heapRemove(vector<Tuple>* heap, vector<int> chosen);
+		void heapInsert(vector<Tuple>* heap, Tuple c);
+		void heapifyBottomUp(vector<Tuple>* heap, int son);
+		void heapifyTopDown(vector<Tuple>* heap, int root);
+		void heapRemove(vector<Tuple>* heap);
 
 	private:
 		int representation;
