@@ -284,10 +284,8 @@ void ETSP::cheapInsertion(){
 
 		index = 0;
 		while (this->minPath[index] != min.verA) index++;
-		if (index == this->minPath.size()-1) this->minPath.push_back(min.verR);
-		else{
-			this->minPath.insert(minPath.begin() + ((index+1) % this->minPath.size()), min.verR);
-			this->descobertos[min.verR-1] = 1;
-		}
+
+		this->minPath.insert(minPath.begin() + ((index+1) % this->minPath.size()), min.verR);
+		this->descobertos[min.verR-1] = 1;
 	}
 }
