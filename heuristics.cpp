@@ -181,57 +181,113 @@ stack<Vertex> ETSP::grahamScan(){
 void ETSP::cheapInsertion(){
 
 	this->totalDist = 0.0;
-	vector<int> chosen;
 
 	stack<Vertex> hull = this->grahamScan();
 	while(!hull.empty()){
+
 		Vertex top = hull.top();
 		this->minPath.push_back(top.id);
 		this->descobertos[top.id-1] = 1;
 		hull.pop();
+		
 		if (!hull.empty()) this->totalDist += getDistance(top.id-1, hull.top().id-1);
 		else this->totalDist += getDistance(top.id-1, this->minPath[0]-1);
 	}
-	
-	for (int i = 0; i < this->vertexNum; i++) if (!(this->descobertos[i])) chosen.push_back(i+1);
+
+	vector<Tuple> smallest;
+	float cab, car, crb;
+
+	for (int i = 0; i < this->minPath.size(); i++){
+
+		Tuple c;
+		c.dist = inf;
+		c.verA = this->minPath[i];
+		c.verB = this->minPath[(i+1) % this->minPath.size()];
+
+		int j = 0;
+		while (this->descobertos[j]) j++;
+		
+		while (j < this->vertexNum){
+			cab = getDistance(c.verA-1, c.verB-1);
+			car = getDistance(c.verA-1, j);
+			crb = getDistance(j, c.verB-1);
+
+			if (c.dist > car + crb - cab){
+				c.dist = car + crb - cab;
+				c.verR = j+1;
+			}
+
+			j++;
+			while (this->descobertos[j]) j++;
+		}
+		this->heapInsert(&smallest, c);
+	}
+
+	Tuple min = smallest[0];
+	this->heapRemove(&smallest);
+	this->totalDist += min.dist;
+
+	int index = 0;
+	while (this->minPath[index] != min.verA) index++;
+
+	this->minPath.insert(minPath.begin() + ((index+1) % this->minPath.size()), min.verR);
+	this->descobertos[min.verR-1] = 1;
+
+	float c1ar, c1rb, c1ab, c2ar, c2rb, c2ab;
 
 	while (this->minPath.size() < this->vertexNum){
+		
+		Tuple c1, c2;
+		c1.dist = inf;
+		c2.dist = inf;
 
-		vector<Tuple> smallest;
-		float cab, car, crb;
+		c1.verA = this->minPath[index];
+		c1.verB = this->minPath[(index+1) % this->minPath.size()];
 
-		for (int j = 0; j < chosen.size(); j++){
+		c2.verA = c1.verB;
+		c2.verB = this->minPath[(index+2) % this->minPath.size()];
 
-			Tuple c;
-			c.dist = inf;
-			c.indexR = j;
+		int j = 0;
+		while (this->descobertos[j]) j++;
+		
+		while (j < this->vertexNum){
+			c1ar = getDistance(c1.verA-1, j);
+			c1rb = getDistance(j, c1.verB-1);
+			c1ab = getDistance(c1.verA-1, c1.verB-1);
+			
+			c2ar = getDistance(c2.verA-1, j);
+			c2rb = getDistance(j, c2.verB-1);
+			c2ab = getDistance(c2.verA-1, c2.verB-1);
 
-			for (int i = 0; i < this->minPath.size(); i++){
-
-				car = getDistance(this->minPath[i]-1, chosen[j]-1);
-				
-				if (i == this->minPath.size()-1){
-					cab = getDistance(this->minPath[i]-1, this->minPath[0]-1); 	
-					crb = getDistance(chosen[j]-1, this->minPath[0]-1);
-				}
-				else{
-					cab = getDistance(this->minPath[i]-1, this->minPath[i+1]-1);
-					crb = getDistance(chosen[j]-1, this->minPath[i+1]-1);
-				}
-
-				if (c.dist > car + crb - cab){
-					c.dist = car + crb - cab;
-					c.indexA = i;
-					c.indexB = i+1;
-				}
+			if (c1.dist > c1ar + c1rb - c1ab){
+				c1.dist = c1ar + c1rb - c1ab;
+				c1.verR = j+1;
 			}
-			this->heapInsert(&smallest, chosen, c);
-		}
-		Tuple min = smallest[0];
-		totalDist += min.dist;
 
-		this->minPath.insert(minPath.begin() + min.indexB, chosen[min.indexR]);
-		this->descobertos[chosen[min.indexR]-1];
-		chosen.erase(chosen.begin() + min.indexR);
+			if (c2.dist > c2ar + c2rb - c2ab){
+				c2.dist = c2ar + c2rb - c2ab;
+				c2.verR = j+1; 
+			}
+
+			j++;
+			while (this->descobertos[j]) j++;
+		}
+
+		this->heapInsert(&smallest, c1);
+		this->heapInsert(&smallest, c2);
+
+		while (this->descobertos[(smallest[0].verR)-1]) this->heapRemove(&smallest);
+
+		Tuple min = smallest[0];
+		this->heapRemove(&smallest);
+		this->totalDist += min.dist;
+
+		index = 0;
+		while (this->minPath[index] != min.verA) index++;
+		if (index == this->minPath.size()-1) this->minPath.push_back(min.verR);
+		else{
+			this->minPath.insert(minPath.begin() + ((index+1) % this->minPath.size()), min.verR);
+			this->descobertos[min.verR-1] = 1;
+		}
 	}
 }
