@@ -83,7 +83,7 @@ ETSP::ETSP(){
 	fclose(in);
 }
 
-void ETSP::init(){
+void ETSP::init(){ // Inicializa a estrutura escolhida (Matriz ou Vetor de Adjacência)
 	
 	if (this->representation == VECTOR){
 		vector<float> v;
@@ -96,7 +96,7 @@ void ETSP::init(){
 	}
 }
 
-int ETSP::initEssentials(int size, int x){
+int ETSP::initEssentials(int size, int x){ //
 	if (size <= 0) return 1;
 	
 	this->representation = x;
@@ -155,8 +155,6 @@ void ETSP::printPath(FILE* file){
 	fprintf(file, "Minimum Distance:	%.10f\n", this->totalDist);
 	//fprintf(file, "Time:	%d", cout);
 	fprintf(file, "Minimum Path:	%d", this->minPath[0]);
-
-	
 	
 	for (int i = 1; i < this->minPath.size(); i++) fprintf(file, " %d", this->minPath[i]);
 }
